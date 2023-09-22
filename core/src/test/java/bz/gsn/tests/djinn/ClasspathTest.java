@@ -1,7 +1,6 @@
 package bz.gsn.tests.djinn;
 
 import bz.gsn.djinn.core.app.Classpath;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +22,7 @@ public class ClasspathTest {
 	}
 
 	@Test
-	@SneakyThrows
-	public void classpathScanMethodAnnotation() {
+	public void classpathScanMethodAnnotation() throws NoSuchMethodException {
 		Assertions.assertEquals(Classpath.annotatedMethods(TestMethodAnnotation.class), Set.of(TestClass.class.getMethod("test")));
 	}
 

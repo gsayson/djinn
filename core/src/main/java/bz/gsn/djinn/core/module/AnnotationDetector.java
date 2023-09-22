@@ -1,10 +1,11 @@
-package bz.gsn.djinn.core;
+package bz.gsn.djinn.core.module;
 
-import bz.gsn.djinn.core.module.DjinnModule;
+import bz.gsn.djinn.core.resource.ResourceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * The base class for all <em>annotation detectors</em>.
@@ -33,13 +34,25 @@ import java.lang.invoke.MethodHandle;
  * We can then use this annotation detector in building a {@link DjinnModule} as such:
  * {@snippet :
  * public void buildingAModule() {
- * 	Djinn.module();
+ * 	Djinn.module()
+ * 		.register(new Foo.FooDetector());
  * }
  * }
  * <p/>
  * Note that the annotation <b>must</b> have a {@linkplain java.lang.annotation.RetentionPolicy#RUNTIME runtime retention policy}.
  */
 public abstract class AnnotationDetector<T extends Annotation> {
+
+	/**
+	 * The class of the annotation that this {@link AnnotationDetector} detects.
+	 */
+	protected final Class<T> type;
+
+	@SuppressWarnings("unchecked")
+	public AnnotationDetector() {
+		ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
+		this.type = (Class<T>) superClass.getActualTypeArguments()[0];
+	}
 
 	/**
 	 * Handles a detection of an annotation on <em>methods</em>.
@@ -49,6 +62,6 @@ public abstract class AnnotationDetector<T extends Annotation> {
 	 * @param handle The method handle of the annotated method.
 	 * @implNote The default implementation does nothing.
 	 */
-	public void handleMethod(@NotNull T obj, @NotNull MethodHandle handle) {}
+	public void handleMethod(@NotNull T obj, @NotNull MethodHandle handle, @NotNull MethodInfo info, @NotNull ResourceRegistry resourceRegistry) {}
 
 }

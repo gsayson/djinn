@@ -1,11 +1,14 @@
 package bz.gsn.djinn.core;
 
 import bz.gsn.djinn.core.app.AppImpl;
+import bz.gsn.djinn.core.module.AnnotationDetector;
 import bz.gsn.djinn.core.module.DjinnModule;
 import bz.gsn.djinn.core.module.Runtime;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -13,6 +16,8 @@ import java.util.*;
  * Djinn is a JVM framework powered by annotations.
  */
 public abstract sealed class Djinn permits AppImpl {
+
+	protected static final Logger logger = LoggerFactory.getLogger(Djinn.class);
 
 	/**
 	 * Runs the Djinn app.
@@ -48,8 +53,8 @@ public abstract sealed class Djinn permits AppImpl {
 		ModuleBuilder() {}
 
 		/**
-		 * Returns whether this builder has already built a module.
-		 * @return whether this builder is consumed.
+		 * Has the module builder been consumed?
+		 * @return whether the above is {@code true}.
 		 */
 		public boolean isConsumed() {
 			return consumed;
@@ -63,7 +68,7 @@ public abstract sealed class Djinn permits AppImpl {
 		 * @return this {@link ModuleBuilder}.
 		 * @throws UnsupportedOperationException if the builder has already been consumed.
 		 */
-		@Contract(value = "_ -> this", mutates = "this")
+		@Contract(value = "_ -> this")
 		public ModuleBuilder register(@NotNull AnnotationDetector<?> @NotNull... annotationDetectors) {
 			throwIfConsumed();
 			this.annotationDetectors.add(List.of(annotationDetectors));
@@ -76,7 +81,7 @@ public abstract sealed class Djinn permits AppImpl {
 		 * @return this {@link ModuleBuilder}.
 		 * @throws UnsupportedOperationException if the builder has already been consumed.
 		 */
-		@Contract(value = "_ -> this", mutates = "this")
+		@Contract(value = "_ -> this")
 		public ModuleBuilder register(@NotNull Runtime @NotNull... runtimes) {
 			throwIfConsumed();
 			this.runtimes.addAll(List.of(runtimes));

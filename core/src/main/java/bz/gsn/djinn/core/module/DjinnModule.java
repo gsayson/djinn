@@ -1,7 +1,5 @@
 package bz.gsn.djinn.core.module;
 
-import bz.gsn.djinn.core.AnnotationDetector;
-import bz.gsn.djinn.core.module.Runtime;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
