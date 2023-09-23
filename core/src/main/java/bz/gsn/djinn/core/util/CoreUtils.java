@@ -55,15 +55,9 @@ public class CoreUtils {
 
 	private static void doThrow(Throwable e) {
 		switch(e) {
-			case RuntimeException runtimeException -> {
-				throw runtimeException;
-			}
-			case Error error -> {
-				throw error;
-			}
-			default -> {
-				doThrow0(e);
-			}
+			case RuntimeException runtimeException -> throw runtimeException;
+			case Error error -> throw error;
+			default -> doThrow0(e);
 		}
 	}
 

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,7 @@ public final class Classpath {
 	private static final ClassGraph cg = new ClassGraph()
 			.enableClassInfo()
 			.enableMethodInfo()
+			.enableFieldInfo()
 			.enableAnnotationInfo()
 			.disableRuntimeInvisibleAnnotations();
 
@@ -31,14 +33,14 @@ public final class Classpath {
 	/**
 	 * Returns a {@link Set} of methods annotated with a given annotation.
 	 * @param clazz The class of the annotation.
-	 * @return the annotated classes.
+	 * @return the annotated methods.
 	 * @param <A> The type of the annotation.
 	 */
 	@NotNull
 	@Unmodifiable
 	public static <A extends Annotation> Set<Method> annotatedMethods(@NotNull Class<A> clazz) {
 		return CoreUtils.sneakyThrows(() -> {
-			try(ScanResult result = cg.scanAsync(Executors.newVirtualThreadPerTaskExecutor(), 10).get()) {
+			try(var $ = Executors.newVirtualThreadPerTaskExecutor(); ScanResult result = cg.scanAsync($, 10).get()) {
 				return result.getClassesWithMethodAnnotation(clazz)
 						.parallelStream()
 						.map(ClassInfo::getMethodInfo)
@@ -47,6 +49,48 @@ public final class Classpath {
 							x.addAll(y); // safe: x is known to be modifiable.
 							return x;
 						});
+			}
+		});
+	}
+
+	/**
+	 * Returns a {@link Set} of fields annotated with a given annotation.
+	 * @param clazz The class of the annotation.
+	 * @return the annotated classes.
+	 * @param <A> The type of the annotation.
+	 */
+	@NotNull
+	@Unmodifiable
+	public static <A extends Annotation> Set<Field> annotatedFields(@NotNull Class<A> clazz) {
+		return CoreUtils.sneakyThrows(() -> {
+			try(var $ = Executors.newVirtualThreadPerTaskExecutor(); ScanResult result = cg.scanAsync($, 10).get()) {
+				return result.getClassesWithFieldAnnotation(clazz)
+						.parallelStream()
+						.map(ClassInfo::getFieldInfo)
+						.map(x -> x.parallelStream().map(FieldInfo::loadClassAndGetField).collect(Collectors.toUnmodifiableSet()))
+						.reduce(new HashSet<>(), (x, y) -> {
+							x.addAll(y); // safe: x is known to be modifiable.
+							return x;
+						});
+			}
+		});
+	}
+
+	/**
+	 * Returns a {@link Set} of types annotated with a given annotation.
+	 * @param clazz The class of the annotation.
+	 * @return the annotated types.
+	 * @param <A> The type of the annotation.
+	 */
+	@NotNull
+	@Unmodifiable
+	public static <A extends Annotation> Set<Class<?>> annotatedTypes(@NotNull Class<A> clazz) {
+		return CoreUtils.sneakyThrows(() -> {
+			try(var $ = Executors.newVirtualThreadPerTaskExecutor(); ScanResult result = cg.scanAsync($, 10).get()) {
+				return result.getClassesWithAnnotation(clazz)
+						.parallelStream()
+						.map(ClassInfo::loadClass)
+						.collect(Collectors.toUnmodifiableSet());
 			}
 		});
 	}

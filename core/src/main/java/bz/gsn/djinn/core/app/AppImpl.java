@@ -11,9 +11,10 @@ import bz.gsn.djinn.core.util.CoreUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.lang.annotation.Annotation;
+import java.lang.annotation.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -28,7 +29,6 @@ public final class AppImpl extends Djinn {
 	private final AppResourceRegistry resourceRegistry;
 	private final ExecutorService runtimeRunner = Executors.newCachedThreadPool(
 			Thread.ofPlatform()
-					.daemon(true)
 					.name("runtime-thread-", 0)
 					.factory()
 	);
@@ -56,14 +56,21 @@ public final class AppImpl extends Djinn {
 	@VisibleForTesting
 	public static void runAnnotationDetectors(@NotNull DjinnModule module, @NotNull ResourceRegistry resourceRegistry) {
 		var anno = module.getAnnotationDetectors();
-		class X<T extends Annotation> {
+		final class X<T extends Annotation> {
 			private final AnnotationDetector<T> detector;
+			private final Class<T> type;
 			private final ResourceRegistry resourceRegistry;
 			X(AnnotationDetector<T> detector, ResourceRegistry resourceRegistry) {
 				this.detector = detector;
+				this.type = CoreUtils.getTypeOfAD(this.detector);
 				this.resourceRegistry = resourceRegistry;
 			}
+			private boolean doesNotTarget(ElementType type) {
+				var ret = this.type.getAnnotation(Target.class);
+				return ret == null || Arrays.stream(ret.value()).noneMatch(e -> e == type);
+			}
 			void handleMethod(Method method) {
+				if(doesNotTarget(ElementType.METHOD)) return;
 				var handle = CoreUtils.sneakyThrows(() -> resolveResources(method, resourceRegistry));
 				detector.handleMethod(
 						Objects.requireNonNull(CoreUtils.getAnnotation(detector, method)),
@@ -72,18 +79,49 @@ public final class AppImpl extends Djinn {
 						resourceRegistry
 				);
 			}
+			void handleField(Field field) {
+				if(doesNotTarget(ElementType.FIELD)) return;
+				var handle = CoreUtils.sneakyThrows(() -> MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup()).unreflectVarHandle(field));
+				detector.handleField(
+						Objects.requireNonNull(CoreUtils.getAnnotation(detector, field)),
+						handle,
+						resourceRegistry
+				);
+			}
+			void handleType(Class<?> type) {
+				if(doesNotTarget(ElementType.TYPE)) return;
+				detector.handleType(
+						Objects.requireNonNull(CoreUtils.getAnnotation(detector, type)),
+						type,
+						resourceRegistry
+				);
+			}
 		}
 		anno.parallelStream()
 			.forEach(annotationDetectors -> {
 				HashMap<Class<?>, Set<Method>> methodCache = new HashMap<>(); // <Annotation, Detector>
+				HashMap<Class<?>, Set<Field>> fieldCache = new HashMap<>();
+				HashMap<Class<?>, Set<Class<?>>> typeCache = new HashMap<>();
 				for(var annotationDetector : annotationDetectors) {
 					var annotationClass = CoreUtils.getTypeOfAD(annotationDetector);
+					var x = new X<>(annotationDetector, resourceRegistry); // X is thread-safe by design
 					methodCache.computeIfAbsent(annotationClass, ignored -> Classpath.annotatedMethods(annotationClass))
 							.parallelStream()
 							.forEach(f -> {
 								logger.info("Running processor {} on method '{}'", annotationDetector.getClass().getName(), f.getName());
-								var x = new X<>(annotationDetector, resourceRegistry);
 								x.handleMethod(f);
+							});
+					fieldCache.computeIfAbsent(annotationClass, ignored -> Classpath.annotatedFields(annotationClass))
+							.parallelStream()
+							.forEach(f -> {
+								logger.info("Running processor {} on field '{}'", annotationDetector.getClass().getName(), f.getName());
+								x.handleField(f);
+							});
+					typeCache.computeIfAbsent(annotationClass, ignored -> Classpath.annotatedTypes(annotationClass))
+							.parallelStream()
+							.forEach(f -> {
+								logger.info("Running processor {} on type '{}'", annotationDetector.getClass().getName(), f.getName());
+								x.handleType(f);
 							});
 				}
 			});

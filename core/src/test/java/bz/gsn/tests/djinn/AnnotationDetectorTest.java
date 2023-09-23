@@ -23,14 +23,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class AnnotationDetectorTest {
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD, ElementType.METHOD})
+	@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
 	public @interface TestAnnotation {
 		String value();
 	}
 
+	@TestAnnotation("class")
 	public static final class TestAnnotationHolder {
-		@TestAnnotation("test")
-		public void xyz() {}
 		@TestAnnotation("test1")
 		public TestResource resource(@Inject TestResource testResource) {
 			return testResource;
@@ -40,30 +39,21 @@ public class AnnotationDetectorTest {
 	public static final class TestResource extends Resource {}
 
 	public static final class TestAnnotationDetector extends AnnotationDetector<TestAnnotation> {
-		private final AtomicReference<String> value;
 		private final Map<MethodInfo, MethodHandle> handles;
+		private final AtomicReference<Class<?>> clazz;
 
-		public TestAnnotationDetector(AtomicReference<String> value) {
-			this.value = value;
+		public TestAnnotationDetector(AtomicReference<Class<?>> clazz) {
+			this.clazz = clazz;
 			this.handles = new HashMap<>();
 		}
 		@Override
 		public void handleMethod(@NotNull TestAnnotation obj, @NotNull MethodHandle handle, @NotNull MethodInfo info, @NotNull ResourceRegistry resourceRegistry) {
-			value.set(obj.value());
 			handles.put(info, handle);
 		}
-	}
-
-	@Test
-	public void adScanMethod() {
-		AtomicReference<String> value = new AtomicReference<>();
-		AppImpl.runAnnotationDetectors(
-				Djinn.module()
-						.register(new TestAnnotationDetector(value))
-						.build(),
-				new AppResourceRegistry(Collections.emptySet())
-		);
-		Assertions.assertEquals(value.get(), "test");
+		@Override
+		public void handleType(@NotNull TestAnnotation obj, @NotNull Class<?> type, @NotNull ResourceRegistry resourceRegistry) {
+			clazz.set(type);
+		}
 	}
 
 	@Test
@@ -86,6 +76,18 @@ public class AnnotationDetectorTest {
 		// note: first argument is known to be receiver argument
 		var x = new TestAnnotationHolder(); // modules should choose which instantiation strategy to use
 		Assertions.assertEquals((TestResource) value.invoke(x), resourceRegistry.getResource(TestResource.class).get());
+	}
+
+	@Test
+	public void adScanClass() {
+		var clazz = new AtomicReference<Class<?>>();
+		AppImpl.runAnnotationDetectors(
+				Djinn.module()
+						.register(new TestAnnotationDetector(clazz))
+						.build(),
+				new AppResourceRegistry(Set.of(TestResource.class))
+		);
+		Assertions.assertEquals(clazz.getAcquire(), TestAnnotationHolder.class);
 	}
 
 }

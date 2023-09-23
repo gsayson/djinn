@@ -6,7 +6,7 @@ module djinn.core {
 
 	exports bz.gsn.djinn.core.app to tests.djinn.core;
 
-	requires transitive io.github.classgraph;
+	requires io.github.classgraph;
 	requires transitive org.slf4j;
 
 	requires static transitive org.jetbrains.annotations;

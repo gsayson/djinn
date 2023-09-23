@@ -3,7 +3,7 @@ package bz.gsn.djinn.core.resource;
 import bz.gsn.djinn.core.module.AnnotationDetector;
 
 /**
- * A singleton resource.
+ * A singleton resource. Types extending this class will be known to the {@link ResourceRegistry} through classpath scanning.
  * <p>
  * <ul>
  *     <li>
@@ -30,7 +30,7 @@ import bz.gsn.djinn.core.module.AnnotationDetector;
  * }
  *
  * @SomeAnnotationThatCallsThisMethod
- * public void foo(TestResource resource) {
+ * public void foo(@Inject TestResource resource) {
  * 	// method handlers cannot see the above parameter, it is filled in by Djinn.
  * }
  * }
