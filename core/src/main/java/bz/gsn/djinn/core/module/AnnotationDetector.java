@@ -47,6 +47,7 @@ import java.lang.reflect.ParameterizedType;
  * <p/>
  * Note that the annotation <b>must</b> have a {@linkplain java.lang.annotation.RetentionPolicy#RUNTIME runtime retention policy}.
  */
+@SuppressWarnings("unused")
 public abstract class AnnotationDetector<T extends Annotation> {
 
 	private static final Logger logger = LoggerFactory.getLogger(AnnotationDetector.class);

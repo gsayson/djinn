@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Information on a method.
  */
+@SuppressWarnings("unused")
 public final class MethodInfo {
 
 	private final String name;
