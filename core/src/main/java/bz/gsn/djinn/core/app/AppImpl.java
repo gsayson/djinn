@@ -19,23 +19,22 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 
 public final class AppImpl extends Djinn {
 
 	private final Collection<DjinnModule> modules;
-	private final AppResourceRegistry resourceRegistry;
-	private final ExecutorService runtimeRunner = Executors.newCachedThreadPool(
-			Thread.ofPlatform()
-					.name("runtime-thread-", 0)
-					.factory()
-	);
+	private final ResourceRegistry resourceRegistry;
 
 	public AppImpl(Collection<DjinnModule> modules) {
 		this.modules = modules;
 		this.resourceRegistry = new AppResourceRegistry(Classpath.directlyExtendingClasses(Resource.class));
+	}
+
+	public AppImpl(Collection<DjinnModule> modules, ResourceRegistry resourceRegistry) {
+		this.modules = modules;
+		this.resourceRegistry = resourceRegistry;
 	}
 
 	/**
@@ -43,9 +42,13 @@ public final class AppImpl extends Djinn {
 	 */
 	@Override
 	public void run() {
+		var tf = Thread.ofPlatform()
+				.daemon(false)
+				.name("runtime-thread-", 0)
+				.factory();
 		modules.parallelStream().forEach(module -> {
 			runAnnotationDetectors(module, resourceRegistry);
-			registerRuntimes(module, resourceRegistry);
+			registerRuntimes(module, resourceRegistry, tf);
 		});
 	}
 
@@ -127,10 +130,13 @@ public final class AppImpl extends Djinn {
 			});
 	}
 
-	private void registerRuntimes(@NotNull DjinnModule module, @NotNull ResourceRegistry resourceRegistry) {
+	private void registerRuntimes(@NotNull DjinnModule module, @NotNull ResourceRegistry resourceRegistry, ThreadFactory tf) {
 		module.getRuntimes()
 				.parallelStream()
-				.forEach(e -> this.runtimeRunner.submit(() -> e.run(resourceRegistry)));
+				.forEach(e -> {
+					logger.info("Starting runtime {}@{}", e.getClass().getName(), Integer.toHexString(System.identityHashCode(e)));
+					tf.newThread(() -> e.run(resourceRegistry)).start();
+				});
 	}
 
 	/**

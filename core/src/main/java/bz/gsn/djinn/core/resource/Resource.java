@@ -7,7 +7,7 @@ import bz.gsn.djinn.core.module.AnnotationDetector;
  * <p>
  * <ul>
  *     <li>
- *         Types extending this class must have a public no-args constructor. Djinn keeps track of a singleton resource throughout the
+ *         Types extending this class must have a no-args constructor of <em>any visibility</em>. Djinn keeps track of a singleton resource throughout the
  *         execution of the Djinn application. If the aforementioned criteria is not fulfilled, Djinn will crash.
  *     </li>
  *     <li>
@@ -34,6 +34,7 @@ import bz.gsn.djinn.core.module.AnnotationDetector;
  * 	// method handlers cannot see the above parameter, it is filled in by Djinn.
  * }
  * }
+ * @see Inject
  */
 public abstract class Resource {
 }

@@ -22,13 +22,13 @@ public final class AppResourceRegistry extends ResourceRegistry {
 
 	/**
 	 * Creates a new {@link AppResourceRegistry}. This will scan for the {@link java.lang.invoke.MethodHandle MethodHandle}s
-	 * of the <b>public no-args</b> constructors and invoke them.
+	 * of the <b>no-args</b> constructors (of public visibility) and invoke them.
 	 * @param classes The classes of the {@link Resource} to instantiate.
 	 */
 	public AppResourceRegistry(@NotNull Collection<Class<? extends Resource>> classes) {
-		var lookup = MethodHandles.publicLookup();
 		var resources = classes.parallelStream()
 				.map(resourceClass -> CoreUtils.sneakyThrows(() -> {
+					var lookup = MethodHandles.publicLookup();
 					try {
 						return lookup.findConstructor(resourceClass, MethodType.methodType(void.class));
 					} catch(NoSuchMethodException ignored) {

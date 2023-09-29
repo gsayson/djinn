@@ -7,6 +7,7 @@ import bz.gsn.djinn.core.module.Runtime;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +37,10 @@ public abstract sealed class Djinn permits AppImpl {
 
 	/**
 	 * A builder for building {@linkplain DjinnModule Djinn modules}.
-	 * <p>
-	 * Djinn modules are a core tenet of the Djinn framework. They expose:
-	 * <ul>
-	 *     <li>Runtimes, which run asynchronously;</li>
-	 *     <li>Annotation detectors, which read annotations on entities.</li>
-	 * </ul>
-	 * This class is not thread-safe.
+	 * These should ONLY be used for testing, as Djinn will not detect
+	 * this module.
 	 */
+	@VisibleForTesting
 	public static final class ModuleBuilder {
 
 		private final Set<List<AnnotationDetector<?>>> annotationDetectors = new HashSet<>();
@@ -98,20 +95,13 @@ public abstract sealed class Djinn permits AppImpl {
 		public @NotNull DjinnModule build() {
 			throwIfConsumed();
 			this.consumed = true;
-			return new DjinnModule() {
-				@NotNull
-				@Override
-				@Unmodifiable
-				public Set<List<AnnotationDetector<?>>> getAnnotationDetectors() {
-					return Collections.unmodifiableSet(annotationDetectors);
+			class X extends DjinnModule {
+				public X() {
+					this.register(runtimes.toArray(Runtime[]::new));
+					annotationDetectors.parallelStream().forEach(e -> e.forEach(this::register));
 				}
-				@NotNull
-				@Override
-				@Unmodifiable
-				public Set<Runtime> getRuntimes() {
-					return Collections.unmodifiableSet(runtimes);
-				}
-			};
+			}
+			return new X();
 		}
 
 		private void throwIfConsumed() {

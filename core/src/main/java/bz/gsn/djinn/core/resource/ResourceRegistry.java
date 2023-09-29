@@ -10,7 +10,7 @@ import java.util.*;
  * Resources are stored as singletons in this registry.
  */
 // We permit ResourceRegistryImpl, but it's only a shim; all our functionality will be implemented here.
-public abstract sealed class ResourceRegistry permits AppResourceRegistry {
+public abstract class ResourceRegistry {
 
 	/**
 	 * Returns an {@link Optional} containing the {@link Resource} stored.
