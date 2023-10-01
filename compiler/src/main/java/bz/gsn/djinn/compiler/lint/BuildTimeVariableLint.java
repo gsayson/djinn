@@ -4,7 +4,6 @@ import io.github.classgraph.ScanResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 

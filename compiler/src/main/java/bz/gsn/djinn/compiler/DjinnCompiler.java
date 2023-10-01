@@ -19,31 +19,25 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * The Djinn compiler & analyzer.
  */
 public final class DjinnCompiler {
 
-	private static final Random random = new SecureRandom();
-
 	private final ScanResult classpath;
 	private final ArrayList<String> buildTimeVariables = new ArrayList<>();
-	private final String bootstrapName = "bz.gsn.djinn.bootstrap.Bootstrapper";
+	private static final String bootstrapName = "bz.gsn.djinn.bootstrap.Bootstrapper";
 	private final Path primary;
-	private final Path[] paths;
 
 	private DjinnCompiler(Path... paths) {
 		this.primary = paths[0]; // guaranteed to exist; see .of(...)
-		this.paths = paths;
 		this.classpath = new ClassGraph()
 				.enableAllInfo()
 				.ignoreMethodVisibility()
@@ -57,15 +51,6 @@ public final class DjinnCompiler {
 	 */
 	public int classCount() {
 		return classpath.getAllClasses().size();
-	}
-
-	/**
-	 * Returns the qualified class name used for bootstrapping.
-	 * It is generated at instantiation-time.
-	 * @return the bootstrapper class name.
-	 */
-	public String getBootstrapName() {
-		return bootstrapName;
 	}
 
 	/**
@@ -98,7 +83,7 @@ public final class DjinnCompiler {
 
 	/**
 	 * Generates the bootstrap class holding the {@code main} method
-	 * for Djinn. The bootstrap class name is taken from {@link #getBootstrapName()}.
+	 * for Djinn.
 	 * @return a byte array containing the classfile of the bootstrap class.
 	 */
 	private byte @NotNull [] generateBootstrapper() {
@@ -107,7 +92,7 @@ public final class DjinnCompiler {
 		var resources = findClassesExtending("bz.gsn.djinn.core.resource.Resource");
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		cw.newClass(hn);
-		cw.visit(Opcodes.V21, Opcodes.ACC_PUBLIC, this.bootstrapName.replace('.', '/'), null, "java/lang/Object", null);
+		cw.visit(Opcodes.V21, Opcodes.ACC_PUBLIC, bootstrapName.replace('.', '/'), null, "java/lang/Object", null);
 		MethodVisitor main = cw.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
 		main.visitCode();
 		generateArray(main, modules, String.class, 1);
@@ -139,7 +124,7 @@ public final class DjinnCompiler {
 		var mf = manifest.getMainAttributes();
 		mf.put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		try(var outputStream = new JarOutputStream(Files.newOutputStream(path), manifest); var primaryStream = Files.list(primary)) {
-			var bootstrap = Files.write(Path.of(primary.resolve(this.bootstrapName.replace('.', '/')) + ".class"), generateBootstrapper());
+			var bootstrap = Files.write(Path.of(primary.resolve(bootstrapName.replace('.', '/')) + ".class"), generateBootstrapper());
 			bootstrap.toFile().deleteOnExit();
 			primaryStream.forEach(filePath -> {
 				try {

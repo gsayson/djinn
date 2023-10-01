@@ -26,9 +26,10 @@ internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a D
         .convert { !it }
 
     private val external: Set<Path> by option("-e", "--external")
-        .help("Paths to directories of other classes or JAR files.")
+        .help("A semicolon-separated set of paths to directories of other classes or JAR files.")
         .path(mustExist = true, mustBeReadable = true, mustBeWritable = true, canBeFile = true, canBeDir = true)
-        .multiple()
+        .split(";")
+        .transformAll { it.flatten() }
         .unique()
 
     private val buildVars: List<String> by option("-B", "--build-var")
