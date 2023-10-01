@@ -13,6 +13,7 @@
         <module>hook</module>
         <module>example-project</module>
         <module>compiler</module>
+        <module>djinn-cli</module>
     </modules>
 
     <properties>

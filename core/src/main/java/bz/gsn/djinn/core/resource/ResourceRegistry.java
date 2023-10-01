@@ -1,8 +1,6 @@
 package bz.gsn.djinn.core.resource;
 
-import bz.gsn.djinn.core.app.AppResourceRegistry;
-
-import java.util.*;
+import java.util.Optional;
 
 /**
  * A {@link Resource} registry.

@@ -6,12 +6,13 @@ import bz.gsn.djinn.core.module.DjinnModule;
 import bz.gsn.djinn.core.module.Runtime;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Djinn is a JVM framework powered by annotations.
@@ -41,6 +42,7 @@ public abstract sealed class Djinn permits AppImpl {
 	 * this module.
 	 */
 	@VisibleForTesting
+	@SuppressWarnings("unused")
 	public static final class ModuleBuilder {
 
 		private final Set<List<AnnotationDetector<?>>> annotationDetectors = new HashSet<>();

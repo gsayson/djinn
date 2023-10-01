@@ -5,4 +5,5 @@ module djinn.compiler {
 	requires djinn.hook;
 	requires static org.jetbrains.annotations;
 	exports bz.gsn.djinn.compiler;
+	exports bz.gsn.djinn.compiler.lint;
 }

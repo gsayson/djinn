@@ -19,9 +19,12 @@ import java.util.stream.Collectors;
  */
 public class Hook {
 
-	public static void standardMain(@NotNull String[] modules, @NotNull String[] resources) {
-		final Logger logger = LoggerFactory.getLogger(Hook.class);
+	private static final Logger logger = LoggerFactory.getLogger(Hook.class);
+
+	@SuppressWarnings("unused")
+	public static void standardMain(@NotNull String @NotNull [] modules, @NotNull String @NotNull [] resources, @NotNull String @NotNull [] buildVariables) {
 		logger.info("Using Djinn standard bootstrap method with {} modules and {} resources detected", modules.length, resources.length);
+		logger.info("{} build variables are included inside bootstrapper", buildVariables.length);
 		new AppImpl(Arrays.stream(modules).map(e -> {
 			try {
 				var x = Class.forName(e).asSubclass(DjinnModule.class);
@@ -29,7 +32,7 @@ public class Hook {
 			} catch(Exception ex) {
 				throw new RuntimeException(ex);
 			}
-		}).toList(), new InternalRR(List.of(resources))).run();
+		}).toList(), new InternalRR(List.of(resources)), buildVariables).run();
 	}
 
 	private static final class InternalRR extends ResourceRegistry {

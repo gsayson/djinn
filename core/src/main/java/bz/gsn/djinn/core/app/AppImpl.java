@@ -1,6 +1,7 @@
 package bz.gsn.djinn.core.app;
 
 import bz.gsn.djinn.core.Djinn;
+import bz.gsn.djinn.core.build.BuildEnvironment;
 import bz.gsn.djinn.core.module.AnnotationDetector;
 import bz.gsn.djinn.core.module.DjinnModule;
 import bz.gsn.djinn.core.module.MethodInfo;
@@ -27,14 +28,15 @@ public final class AppImpl extends Djinn {
 	private final Collection<DjinnModule> modules;
 	private final ResourceRegistry resourceRegistry;
 
-	public AppImpl(Collection<DjinnModule> modules) {
-		this.modules = modules;
-		this.resourceRegistry = new AppResourceRegistry(Classpath.directlyExtendingClasses(Resource.class));
-	}
-
-	public AppImpl(Collection<DjinnModule> modules, ResourceRegistry resourceRegistry) {
+	public AppImpl(Collection<DjinnModule> modules, ResourceRegistry resourceRegistry, String[] buildVariables) {
 		this.modules = modules;
 		this.resourceRegistry = resourceRegistry;
+		CoreUtils.sneakyThrows(() -> {
+			var field = BuildEnvironment.class.getDeclaredField("buildEnvironment");
+			field.setAccessible(true);
+			field.set(null, new BuildEnvironmentImpl(buildVariables));
+			return null;
+		});
 	}
 
 	/**
