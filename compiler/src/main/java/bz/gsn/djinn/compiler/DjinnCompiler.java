@@ -124,7 +124,9 @@ public final class DjinnCompiler {
 		var mf = manifest.getMainAttributes();
 		mf.put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		try(var outputStream = new JarOutputStream(Files.newOutputStream(path), manifest); var primaryStream = Files.list(primary)) {
-			var bootstrap = Files.write(Path.of(primary.resolve(bootstrapName.replace('.', '/')) + ".class"), generateBootstrapper());
+			var x = Path.of(primary.resolve(bootstrapName.replace('.', '/')) + ".class");
+			Files.createDirectories(x.getParent());
+			var bootstrap = Files.write(x, generateBootstrapper());
 			bootstrap.toFile().deleteOnExit();
 			primaryStream.forEach(filePath -> {
 				try {
@@ -134,6 +136,7 @@ public final class DjinnCompiler {
 				}
 			});
 			Files.delete(bootstrap);
+			Files.deleteIfExists(primary.resolve("bz/gsn/djinn/bootstrap/"));
 		}
 	}
 

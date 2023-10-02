@@ -67,7 +67,7 @@ internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a D
                 action("Bootstrapped", "application in $time using standard hook")
             }
         }
-        if(errors == 0) action("Compiled", "Djinn application in $duration with $warnings warning(s)")
+        if(errors == 0) action("Compiled", "Djinn application in $duration with $warnings warning(s) to $outputJar")
         else echo("${(TextStyles.bold + TextColors.red)("Failed")} to compile Djinn application with $warnings warning(s) and $errors error(s)")
     }
 
