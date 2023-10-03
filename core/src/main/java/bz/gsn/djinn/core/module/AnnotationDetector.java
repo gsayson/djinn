@@ -111,9 +111,10 @@ public abstract class AnnotationDetector<T extends Annotation> {
 	 * @param obj The instance of the detected annotation.
 	 * @param type The {@link Class} of the annotated type.
 	 * @param resourceRegistry Access to the {@link ResourceRegistry}.
+	 * @param <V> The type of the class.
 	 * @implNote The default implementation issues a warning.
 	 */
-	public void handleType(@NotNull T obj, @NotNull Class<?> type, @NotNull ResourceRegistry resourceRegistry) {
+	public <V> void handleType(@NotNull T obj, @NotNull Class<V> type, @NotNull ResourceRegistry resourceRegistry) {
 		printStub("type");
 	}
 

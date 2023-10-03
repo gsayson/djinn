@@ -35,8 +35,7 @@ import bz.gsn.djinn.core.module.Runtime;
 
 public class FooRuntime extends Runtime {
 	public void run(ResourceRegistry resourceRegistry) {
-		this.wait(5000); // wait 5ms
-        // in actuality, most useful Runtimes don't terminate
+		this.wait(5000); // wait 5s
 	}
 }
 ```

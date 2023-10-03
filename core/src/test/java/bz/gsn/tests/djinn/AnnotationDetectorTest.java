@@ -51,7 +51,7 @@ public class AnnotationDetectorTest {
 			handles.put(info, handle);
 		}
 		@Override
-		public void handleType(@NotNull TestAnnotation obj, @NotNull Class<?> type, @NotNull ResourceRegistry resourceRegistry) {
+		public <V> void handleType(@NotNull TestAnnotation obj, @NotNull Class<V> type, @NotNull ResourceRegistry resourceRegistry) {
 			clazz.set(type);
 		}
 	}
