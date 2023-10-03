@@ -10,7 +10,7 @@ import java.util.Set;
 
 /**
  * Represents a Djinn module.
- * @implNote Implementors should only declare a constructor and use {@link #register(AnnotationDetector[])}
+ * Implementors should only declare a constructor and use {@link #register(AnnotationDetector[])}
  * or {@link #register(Runtime...)} to construct modules.
  */
 public abstract class DjinnModule {

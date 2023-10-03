@@ -1,8 +1,10 @@
 package foo.bar.resource;
 
 import bz.gsn.djinn.core.resource.Resource;
-import lombok.extern.slf4j.Slf4j;
+import foo.bar.TestRuntime;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,8 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * A {@link Resource} storing singletons.
  */
 @SuppressWarnings("unused")
-@Slf4j
 public class SingletonResource extends Resource {
+
+	private static final Logger log = LoggerFactory.getLogger(TestRuntime.class);
 
 	/**
 	 * The map of singletons.

@@ -27,7 +27,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 /**
- * The Djinn compiler & analyzer.
+ * The Djinn compiler and analyzer.
  */
 public final class DjinnCompiler {
 

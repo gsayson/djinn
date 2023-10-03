@@ -3,15 +3,18 @@ package foo.bar.rest;
 import bz.gsn.djinn.core.build.BuildEnvironment;
 import bz.gsn.djinn.core.resource.Inject;
 import foo.bar.TestResource;
+import foo.bar.TestRuntime;
 import foo.bar.annotations.RequestHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An example REST API.
  */
-@Slf4j
 public class MyRestAPI {
+
+	private static final Logger log = LoggerFactory.getLogger(TestRuntime.class);
 
 	private MyRestAPI() {
 		//no instance

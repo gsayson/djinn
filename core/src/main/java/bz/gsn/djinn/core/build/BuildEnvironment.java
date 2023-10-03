@@ -39,8 +39,8 @@ public abstract sealed class BuildEnvironment permits BuildEnvironmentImpl {
 
 	/**
 	 * Retrieves a property denoted by the given {@link String} key.
+	 * @param key The key of the property.
 	 * @return the designated property, else {@code null} if it does not exist.
-	 * @implNote The default implementation retrieves properties from {@link #getProperties()}.
 	 */
 	public @Nullable String getProperty(String key) {
 		return getProperties().get(key);

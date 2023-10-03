@@ -1,7 +1,6 @@
 package bz.gsn.djinn.core.module;
 
 import bz.gsn.djinn.core.resource.ResourceRegistry;
-import org.jetbrains.annotations.NonBlocking;
 
 /**
  * The base class for all runtimes. Runtimes allow processes to run asynchronously in threads.
@@ -41,10 +40,7 @@ public abstract class Runtime {
 	/**
 	 * Runs the given {@link Runtime}. This method will be called on a new thread.
 	 * @param resourceRegistry The resource registry.
-	 * @implNote The {@link java.util.concurrent.ExecutorService ExecutorService} running
-	 * this method uses platform threads.
 	 */
-	@NonBlocking
 	public abstract void run(ResourceRegistry resourceRegistry);
 
 }

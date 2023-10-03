@@ -3,14 +3,15 @@ package foo.bar.annotations;
 import bz.gsn.djinn.core.module.AnnotationDetector;
 import bz.gsn.djinn.core.module.MethodInfo;
 import bz.gsn.djinn.core.resource.ResourceRegistry;
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import foo.bar.TestRuntime;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.*;
 import java.lang.invoke.MethodHandle;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,12 +41,19 @@ public @interface RequestHandler {
 		String value();
 	}
 
-	@Getter
-	@Slf4j
 	final class Detector extends AnnotationDetector<RequestHandler> {
+		private static final Logger log = LoggerFactory.getLogger(TestRuntime.class);
+
+		public Map<String, MethodHandle> getMethodHandles() {
+			return methodHandles;
+		}
+
+		public Map<String, String> getContentTypes() {
+			return contentTypes;
+		}
+
 		private final Map<String, MethodHandle> methodHandles = new HashMap<>(); // we will only just expect a zero-found-args method
 		private final Map<String, String> contentTypes = new HashMap<>();
-		@SneakyThrows
 		@Override
 		public void handleMethod(@NotNull RequestHandler obj, @NotNull MethodHandle handle, @NotNull MethodInfo info, @NotNull ResourceRegistry resourceRegistry) {
 			ContentType contentType = (ContentType) Arrays.stream(info.getAnnotations())
@@ -62,7 +70,12 @@ public @interface RequestHandler {
 						}
 					});
 			log.info("Found method handle with info {}", info);
-			var val = new URI(obj.value()).normalize().getPath();
+			String val;
+			try {
+				val = new URI(obj.value()).normalize().getPath();
+			} catch(URISyntaxException e) {
+				throw new RuntimeException(e);
+			}
 			if(!val.endsWith("/")) val += "/";
 			this.methodHandles.put(val, handle);
 			this.contentTypes.put(val, contentType.value());

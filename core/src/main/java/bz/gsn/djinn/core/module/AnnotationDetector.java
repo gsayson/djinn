@@ -44,7 +44,7 @@ import java.lang.reflect.ParameterizedType;
  * 		.build();
  * }
  * }
- * <p/>
+ * <p>
  * Note that the annotation <b>must</b> have a {@linkplain java.lang.annotation.RetentionPolicy#RUNTIME runtime retention policy}.
  */
 @SuppressWarnings("unused")
@@ -83,7 +83,6 @@ public abstract class AnnotationDetector<T extends Annotation> {
 	 * @param handle The {@link MethodHandle} of the annotated method.
 	 * @param info The {@link MethodInfo} of the method handle.
 	 * @param resourceRegistry Access to the {@link ResourceRegistry}.
-	 * @implNote The default implementation issues a warning.
 	 */
 	public void handleMethod(@NotNull T obj, @NotNull MethodHandle handle, @NotNull MethodInfo info, @NotNull ResourceRegistry resourceRegistry) {
 		printStub("method");
@@ -98,7 +97,6 @@ public abstract class AnnotationDetector<T extends Annotation> {
 	 * @param obj The instance of the detected annotation.
 	 * @param varHandle The {@link VarHandle} of the annotated field.
 	 * @param resourceRegistry Access to the {@link ResourceRegistry}.
-	 * @implNote The default implementation issues a warning.
 	 */
 	public void handleField(@NotNull T obj, @NotNull VarHandle varHandle, @NotNull ResourceRegistry resourceRegistry) {
 		printStub("field");
@@ -112,7 +110,6 @@ public abstract class AnnotationDetector<T extends Annotation> {
 	 * @param type The {@link Class} of the annotated type.
 	 * @param resourceRegistry Access to the {@link ResourceRegistry}.
 	 * @param <V> The type of the class.
-	 * @implNote The default implementation issues a warning.
 	 */
 	public <V> void handleType(@NotNull T obj, @NotNull Class<V> type, @NotNull ResourceRegistry resourceRegistry) {
 		printStub("type");

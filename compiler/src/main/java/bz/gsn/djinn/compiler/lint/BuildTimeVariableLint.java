@@ -11,7 +11,7 @@ import java.util.List;
  * A lint to ensure that:
  * <ul>
  *     <li>build-time variable keys follow the regex {@code [a-zA-Z0-9_-]+(\\.*[a-zA-Z0-9_-]+)*}</li>
- *     <b>build-time variable strings are key-value strings</b>
+ *     <li>build-time variable strings are key-value strings</li>
  * </ul>
  */
 public class BuildTimeVariableLint implements Lint {

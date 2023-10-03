@@ -7,16 +7,16 @@ import foo.bar.annotations.RequestHandler;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.CanonicalPathHandler;
 import io.undertow.util.Headers;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandle;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-@Slf4j
 public class TestRuntime extends Runtime {
 
+	private static final Logger log = LoggerFactory.getLogger(TestRuntime.class);
 	private final Map<String, MethodHandle> handles;
 	private final Map<String, String> contentTypes;
 
