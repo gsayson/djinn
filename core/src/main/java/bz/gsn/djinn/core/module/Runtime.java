@@ -43,4 +43,10 @@ public abstract class Runtime {
 	 */
 	public abstract void run(ResourceRegistry resourceRegistry);
 
+	/**
+	 * Stops the given {@link Runtime}. This method will be called when the application
+	 * is gracefully shutting down.
+	 */
+	public void stop(ResourceRegistry ignore) {}
+
 }

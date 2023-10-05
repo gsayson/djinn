@@ -138,6 +138,7 @@ public final class AppImpl extends Djinn {
 				.forEach(e -> {
 					logger.info("Starting runtime {}@{}", e.getClass().getName(), Integer.toHexString(System.identityHashCode(e)));
 					tf.newThread(() -> e.run(resourceRegistry)).start();
+					Runtime.getRuntime().addShutdownHook(Thread.ofVirtual().unstarted(() -> e.stop(resourceRegistry)));
 				});
 	}
 

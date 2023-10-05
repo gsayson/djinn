@@ -2,7 +2,7 @@ package bz.gsn.djinn.compiler;
 
 import bz.gsn.djinn.compiler.lint.Diagnostic;
 import bz.gsn.djinn.compiler.lint.DiagnosticEmitter;
-import bz.gsn.djinn.compiler.lint.FinalResourceLint;
+import bz.gsn.djinn.compiler.lint.AFResourceLint;
 import bz.gsn.djinn.compiler.lint.ResourceConstructorLint;
 import bz.gsn.djinn.hook.Hook;
 import io.github.classgraph.ClassGraph;
@@ -76,9 +76,18 @@ public final class DjinnCompiler {
 		return new DjinnCompiler(al.toArray(Path[]::new));
 	}
 
+	/**
+	 * Finds the non-anonymous classes extending the given superclass.
+	 * @param superclass The name of the superclass.
+	 * @return the subclasses.
+	 */
 	@SuppressWarnings("SameParameterValue")
 	public List<String> findClassesExtending(@NotNull String superclass) {
-		return classpath.getSubclasses(superclass).directOnly().parallelStream().map(ClassInfo::getName).toList();
+		return classpath.getSubclasses(superclass)
+				.filter(e -> !e.isAnonymousInnerClass())
+				.parallelStream()
+				.map(ClassInfo::getName)
+				.toList();
 	}
 
 	/**
@@ -197,7 +206,7 @@ public final class DjinnCompiler {
 	public @NotNull List<@NotNull Diagnostic> lint() {
 		var dg = new DCDiagnosticEmitter();
 		List.of(
-				new FinalResourceLint(), // W0001
+				new AFResourceLint(), // W0001
 				new ResourceConstructorLint() // E0001
 		).parallelStream().forEach(e -> e.lint(this.classpath, dg, buildTimeVariables));
 		return dg.diagnostics;

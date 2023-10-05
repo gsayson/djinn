@@ -1,3 +1,5 @@
+@file:JvmName("Main")
+
 package bz.gsn.djinn.cli
 
 import bz.gsn.djinn.cli.internal.CompileTask

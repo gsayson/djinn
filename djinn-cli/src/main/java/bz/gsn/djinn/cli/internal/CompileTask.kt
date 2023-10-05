@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.options.*
+import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextStyles
@@ -45,6 +46,11 @@ internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a D
         .path(mustExist = true, mustBeReadable = true, mustBeWritable = true, canBeFile = false, canBeDir = true)
         .default(Path("").toAbsolutePath())
 
+    private val disableWarnings: Set<Int> by option("-a", "--allow")
+        .int(false)
+        .multiple()
+        .unique()
+
     override fun run() {
         val compiler = DjinnCompiler.of(primary, *external.toTypedArray())
         action("Compiling", "Djinn application at $primary with ${external.size} external classpaths")
@@ -54,7 +60,7 @@ internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a D
             action("Located", "${compiler.findClassesExtending("bz.gsn.djinn.core.module.DjinnModule").size} module(s) in total")
             action("Located", "${compiler.findClassesExtending("bz.gsn.djinn.core.resource.Resource").size} resource(s) in total")
             action("Linting", "${compiler.classCount()} classes")
-            val diagnostics = compiler.lint()
+            val diagnostics = compiler.lint().filter { if(it.level() == Diagnostic.Level.WARNING) { !disableWarnings.contains(it.code()) } else true }
             warnings = diagnostics.count { it.level() == Diagnostic.Level.WARNING }
             errors = diagnostics.count { it.level() == Diagnostic.Level.ERROR }
             diagnostics.forEach { print(it) }
