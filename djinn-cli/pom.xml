@@ -6,7 +6,7 @@
     <parent>
         <groupId>bz.gsn.djinn</groupId>
         <artifactId>djinn</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
 
     <artifactId>djinn-cli</artifactId>
@@ -14,12 +14,11 @@
     <description>The Djinn CLI.</description>
     <url>https://github.com/gsayson/djinn</url>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
 
     <licenses>
         <license>
             <name>The GNU Lesser General Public License, Version 3.0</name>
-            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
         </license>
     </licenses>
 
@@ -63,7 +62,7 @@
         <dependency>
             <groupId>bz.gsn.djinn</groupId>
             <artifactId>djinn-compiler</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.ajalt.mordant</groupId>
