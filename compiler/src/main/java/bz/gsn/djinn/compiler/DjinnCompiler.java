@@ -79,12 +79,14 @@ public final class DjinnCompiler {
 	/**
 	 * Finds the non-anonymous classes extending the given superclass.
 	 * @param superclass The name of the superclass.
+	 * @param direct Whether it must be direct.
 	 * @return the subclasses.
 	 */
 	@SuppressWarnings("SameParameterValue")
-	public List<String> findClassesExtending(@NotNull String superclass) {
+	public List<String> findClassesExtending(@NotNull String superclass, boolean direct) {
 		return classpath.getSubclasses(superclass)
 				.filter(e -> !e.isAnonymousInnerClass())
+				.filter(e -> !direct || e.getSuperclass().getName().equals(superclass))
 				.parallelStream()
 				.map(ClassInfo::getName)
 				.toList();
@@ -97,8 +99,8 @@ public final class DjinnCompiler {
 	 */
 	private byte @NotNull [] generateBootstrapper() {
 		var hn = Type.getInternalName(Hook.class);
-		var modules = findClassesExtending("bz.gsn.djinn.core.module.DjinnModule");
-		var resources = findClassesExtending("bz.gsn.djinn.core.resource.Resource");
+		var modules = findClassesExtending("bz.gsn.djinn.core.module.DjinnModule", true);
+		var resources = findClassesExtending("bz.gsn.djinn.core.resource.Resource", false);
 		ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 		cw.newClass(hn);
 		cw.visit(Opcodes.V21, Opcodes.ACC_PUBLIC, bootstrapName.replace('.', '/'), null, "java/lang/Object", null);

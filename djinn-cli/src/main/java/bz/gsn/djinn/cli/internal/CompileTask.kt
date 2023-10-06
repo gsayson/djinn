@@ -57,8 +57,8 @@ internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a D
         var warnings = 0
         var errors = 0
         val duration = measureTime {
-            action("Located", "${compiler.findClassesExtending("bz.gsn.djinn.core.module.DjinnModule").size} module(s) in total")
-            action("Located", "${compiler.findClassesExtending("bz.gsn.djinn.core.resource.Resource").size} resource(s) in total")
+            action("Located", "${compiler.findClassesExtending("bz.gsn.djinn.core.module.DjinnModule", true).size} module(s) in total")
+            action("Located", "${compiler.findClassesExtending("bz.gsn.djinn.core.resource.Resource", false).size} resource(s) in total")
             action("Linting", "${compiler.classCount()} classes")
             val diagnostics = compiler.lint().filter { if(it.level() == Diagnostic.Level.WARNING) { !disableWarnings.contains(it.code()) } else true }
             warnings = diagnostics.count { it.level() == Diagnostic.Level.WARNING }
