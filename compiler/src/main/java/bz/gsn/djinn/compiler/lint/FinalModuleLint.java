@@ -17,7 +17,7 @@ public class FinalModuleLint implements Lint {
 				.parallelStream()
 				.filter(e -> !e.isFinal())
 				.forEach(e -> diagnosticEmitter.warning(
-						1,
+						2,
 						"Modules should be marked as final",
 						"class " + e.getName(),
 						new String[] {

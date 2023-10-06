@@ -6,7 +6,7 @@
     <parent>
         <groupId>bz.gsn.djinn</groupId>
         <artifactId>djinn</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
     </parent>
 
     <artifactId>djinn-cli</artifactId>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>bz.gsn.djinn</groupId>
             <artifactId>djinn-compiler</artifactId>
-            <version>1.2.0</version>
+            <version>1.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.ajalt.mordant</groupId>

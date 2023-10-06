@@ -1,9 +1,6 @@
 package bz.gsn.djinn.compiler;
 
-import bz.gsn.djinn.compiler.lint.Diagnostic;
-import bz.gsn.djinn.compiler.lint.DiagnosticEmitter;
-import bz.gsn.djinn.compiler.lint.AFResourceLint;
-import bz.gsn.djinn.compiler.lint.ResourceConstructorLint;
+import bz.gsn.djinn.compiler.lint.*;
 import bz.gsn.djinn.hook.Hook;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -209,7 +206,10 @@ public final class DjinnCompiler {
 		var dg = new DCDiagnosticEmitter();
 		List.of(
 				new AFResourceLint(), // W0001
-				new ResourceConstructorLint() // E0001
+				new ResourceConstructorLint(), // E0001
+				new BuildTimeVariableLint(), // E0002, E0003, E0004
+				new FinalModuleLint(), // W0002
+				new AnonymousResourceLint() // W0003
 		).parallelStream().forEach(e -> e.lint(this.classpath, dg, buildTimeVariables));
 		return dg.diagnostics;
 	}

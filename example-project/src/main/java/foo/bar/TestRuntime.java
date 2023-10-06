@@ -19,6 +19,7 @@ public class TestRuntime extends Runtime {
 	private static final Logger log = LoggerFactory.getLogger(TestRuntime.class);
 	private final Map<String, MethodHandle> handles;
 	private final Map<String, String> contentTypes;
+	private Undertow undertow;
 
 	public TestRuntime(RequestHandler.Detector detector) {
 		this.handles = detector.getMethodHandles();
@@ -30,7 +31,7 @@ public class TestRuntime extends Runtime {
 		log.info("I'm from the TestRuntime.");
 		System.out.println("Build variables are " + BuildEnvironment.getBuildEnvironment().getProperties());
 		log.info("Running Undertow on port 8080");
-		Undertow.builder()
+		this.undertow = Undertow.builder()
 				.addHttpListener(8080, "localhost")
 				.setHandler(new CanonicalPathHandler(
 						exchange -> {
@@ -54,8 +55,12 @@ public class TestRuntime extends Runtime {
 							}
 						}
 				))
-				.build()
-				.start();
+				.build();
+		this.undertow.start();
 	}
 
+	@Override
+	public void stop(ResourceRegistry ignore) {
+		this.undertow.stop();
+	}
 }

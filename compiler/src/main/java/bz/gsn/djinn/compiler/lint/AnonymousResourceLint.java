@@ -18,7 +18,7 @@ public class AnonymousResourceLint implements Lint {
 				.parallelStream()
 				.filter(ClassInfo::isAnonymousInnerClass)
 				.forEach(e -> diagnosticEmitter.warning(
-						5,
+						3,
 						"Anonymous subclassing of resources",
 						"class " + e.getName(),
 						new String[] {
