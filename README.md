@@ -51,7 +51,8 @@ public final class FooModule extends DjinnModule {
 }
 ```
 
-**TODO**: Specify how to build Djinn apps.
+In order to compile this, we download the Djinn CLI (on the releases page, it's an uber-jar), which will
+generate our bootstrapper and bundle our code as a JAR.
 
 ## Djinn resources
 
