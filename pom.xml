@@ -6,7 +6,7 @@
 
     <groupId>bz.gsn.djinn</groupId>
     <artifactId>djinn</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <packaging>pom</packaging>
     <modules>
         <module>core</module>
@@ -45,6 +45,12 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <core>1.3.1</core>
+        <compiler>1.4.0</compiler>
+        <cli>1.4.0</cli>
+        <hook>1.4.0</hook>
+        <example-project>1.3.1</example-project>
+        <maven-plugin>1.0.0</maven-plugin>
     </properties>
 
     <distributionManagement>
@@ -63,6 +69,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>

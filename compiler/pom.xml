@@ -6,7 +6,7 @@
     <parent>
         <groupId>bz.gsn.djinn</groupId>
         <artifactId>djinn</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
     </parent>
 
     <artifactId>djinn-compiler</artifactId>
@@ -14,6 +14,7 @@
     <description>The compiler library for Djinn.</description>
     <url>https://github.com/gsayson/djinn</url>
     <packaging>jar</packaging>
+    <version>${compiler}</version>
 
     <licenses>
         <license>
@@ -45,17 +46,17 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>LATEST</version>
+            <version>9.6</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-commons</artifactId>
-            <version>LATEST</version>
+            <version>9.6</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>LATEST</version>
+            <version>24.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -66,12 +67,12 @@
         <dependency>
             <groupId>bz.gsn.djinn</groupId>
             <artifactId>djinn-hook</artifactId>
-            <version>1.3.0</version>
+            <version>${hook}</version>
         </dependency>
         <dependency>
             <groupId>bz.gsn.djinn</groupId>
             <artifactId>djinn-core</artifactId>
-            <version>1.3.0</version>
+            <version>${core}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -86,6 +87,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -98,6 +100,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -110,6 +113,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>

@@ -11,8 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A {@link Resource} storing singletons.
  */
-@SuppressWarnings("unused")
-public class SingletonResource extends Resource {
+public final class SingletonResource extends Resource {
 
 	private static final Logger log = LoggerFactory.getLogger(TestRuntime.class);
 

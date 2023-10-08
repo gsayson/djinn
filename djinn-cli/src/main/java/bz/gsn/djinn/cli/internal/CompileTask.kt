@@ -19,7 +19,7 @@ import kotlin.time.measureTime
 /**
  * A compiler task.
  */
-internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a Djinn application to a JAR.") {
+internal class CompileTask : CliktCommand(name = "compile", help = "Compiles a Djinn application to a JAR") {
 
     private val bootstrap: Boolean by option("-k", "--keep-bootstrap")
         .help("Whether or not the bootstrap class should be regenerated during compilation.")

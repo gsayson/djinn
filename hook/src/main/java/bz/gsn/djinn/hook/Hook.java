@@ -24,13 +24,13 @@ public class Hook {
 	@SuppressWarnings("unused")
 	public static void standardMain(@NotNull String @NotNull [] modules, @NotNull String @NotNull [] resources, @NotNull String @NotNull [] buildVariables) {
 		System.out.println("""
-				_|_|_|    _|  _|
-				_|    _|          _|_|_|    _|_|_|
-				_|    _|  _|  _|  _|    _|  _|    _|
-				_|    _|  _|  _|  _|    _|  _|    _|
-				_|_|_|    _|  _|  _|    _|  _|    _|
-				          _|
-				        _|""");
+				d8888b.    d88b d888888b d8b   db d8b   db\s
+				88  `8D    `8P'   `88'   888o  88 888o  88\s
+				88   88     88     88    88V8o 88 88V8o 88\s
+				88   88     88     88    88 V8o88 88 V8o88\s
+				88  .8D db. 88    .88.   88  V888 88  V888\s
+				Y8888D' Y8888P  Y888888P VP   V8P VP   V8P
+				""");
 		logger.info("Using Djinn standard bootstrap method with {} modules and {} resources detected", modules.length, resources.length);
 		logger.info("{} build variables are included inside bootstrapper", buildVariables.length);
 		new AppImpl(Arrays.stream(modules).map(e -> {

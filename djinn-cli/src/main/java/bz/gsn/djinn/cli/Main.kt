@@ -4,6 +4,7 @@ package bz.gsn.djinn.cli
 
 import bz.gsn.djinn.cli.internal.CompileTask
 import bz.gsn.djinn.cli.internal.DiagnosticsPrinter
+import bz.gsn.djinn.cli.internal.RunTask
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.options.flag
@@ -41,6 +42,7 @@ internal fun CliktCommand.action(action: String, appendix: String) {
 
 fun main(args: Array<String>) = DjinnCLI()
     .subcommands(
-        CompileTask()
+        CompileTask(),
+        RunTask()
     )
     .main(args)

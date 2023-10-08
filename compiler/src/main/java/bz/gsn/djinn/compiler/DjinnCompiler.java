@@ -94,7 +94,7 @@ public final class DjinnCompiler {
 	 * for Djinn.
 	 * @return a byte array containing the classfile of the bootstrap class.
 	 */
-	private byte @NotNull [] generateBootstrapper() {
+	public byte @NotNull [] generateBootstrapper() {
 		var hn = Type.getInternalName(Hook.class);
 		var modules = findClassesExtending("bz.gsn.djinn.core.module.DjinnModule", true);
 		var resources = findClassesExtending("bz.gsn.djinn.core.resource.Resource", false);
