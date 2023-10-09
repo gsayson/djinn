@@ -12,7 +12,8 @@ public abstract class ResourceRegistry {
 
 	/**
 	 * Returns an {@link Optional} containing the {@link Resource} stored.
-	 * multiple methods or runtimes are modifying the same resource.
+	 * Multiple methods or runtimes may be modifying the same resource,
+	 * so it is the resource's responsibility to implement thread-safe functionality.
 	 * @param resource The class of the required resource.
 	 * @return an {@link Optional} holding the {@link Resource}.
 	 * @param <T> The type of the required resource.

@@ -37,7 +37,15 @@ public final class AppResourceRegistry extends ResourceRegistry {
 						throw new NoSuchMethodException("The no-args constructor of " + resourceClass.getName() + " must be public");
 					}
 				}))
-				.map(handle -> handle.type().returnType().cast(CoreUtils.sneakyThrows(handle::invoke)))
+				.map(handle -> {
+					try {
+						return Optional.of(handle.type().returnType().cast(CoreUtils.sneakyThrows(handle::invoke)));
+					} catch(Throwable throwable) {
+						return Optional.empty();
+					}
+				})
+				.filter(Optional::isPresent)
+				.map(Optional::get)
 				.collect(Collectors.toUnmodifiableSet());
 		for(var resource : resources) {
 			var res = (Resource) resource;
